@@ -2227,13 +2227,16 @@ async function init() {
       lo.style.display = 'none';
       li.style.display = 'block';
  
-      var name  = user.displayName || user.email || 'Usuário';
+      var name  = user.isAnonymous ? 'Visitante' : (user.displayName || user.email || 'Usuário');
       var first = name.split(' ')[0];
  
       var elName  = document.getElementById('sb-un');
       var elEmail = document.getElementById('sb-email');
       if (elName)  elName.textContent  = first;
-      if (elEmail) { elEmail.textContent = user.email; elEmail.style.display = 'block'; }
+      if (elEmail) {
+        elEmail.textContent = user.isAnonymous ? 'Conta anônima' : (user.email || '');
+        elEmail.style.display = 'block';
+      }
  
       var avImg    = document.getElementById('sb-av-img');
       var avLetter = document.getElementById('sb-av-letter');
@@ -2276,21 +2279,119 @@ async function init() {
   window._setSyncStatus = setSyncStatus;
  
   
+  var _authMode = 'login';
+
+  function setAuthBusy(busy) {
+    document.querySelectorAll('.auth-modal button, .auth-modal input').forEach(function(el) {
+      el.disabled = !!busy;
+    });
+    var status = document.getElementById('auth-modal-status');
+    if (status) status.textContent = busy ? 'Aguarde...' : '';
+  }
+
+  function setAuthError(msg) {
+    var status = document.getElementById('auth-modal-status');
+    if (status) status.textContent = msg || '';
+  }
+
+  window.openAuthModal = function(mode) {
+    _authMode = mode || 'login';
+    var modal = document.getElementById('auth-modal');
+    if (!modal) return;
+    modal.classList.add('on');
+    modal.setAttribute('aria-hidden', 'false');
+    setAuthMode(_authMode);
+    setAuthError('');
+    setTimeout(function() {
+      var email = document.getElementById('auth-email');
+      if (email) email.focus();
+    }, 60);
+  };
+
+  window.closeAuthModal = function() {
+    var modal = document.getElementById('auth-modal');
+    if (!modal) return;
+    modal.classList.remove('on');
+    modal.setAttribute('aria-hidden', 'true');
+    setAuthBusy(false);
+  };
+
+  window.setAuthMode = function(mode) {
+    _authMode = mode === 'register' ? 'register' : 'login';
+    var title = document.getElementById('auth-modal-title');
+    var sub = document.getElementById('auth-modal-sub');
+    var submit = document.getElementById('auth-email-submit');
+    var loginTab = document.getElementById('auth-tab-login');
+    var registerTab = document.getElementById('auth-tab-register');
+    if (title) title.textContent = _authMode === 'register' ? 'Criar conta' : 'Entrar';
+    if (sub) sub.textContent = _authMode === 'register'
+      ? 'Crie uma conta para salvar seus dados na nuvem.'
+      : 'Escolha como quer acessar sua conta.';
+    if (submit) submit.textContent = _authMode === 'register' ? 'Criar conta' : 'Entrar com email';
+    if (loginTab) loginTab.classList.toggle('on', _authMode === 'login');
+    if (registerTab) registerTab.classList.toggle('on', _authMode === 'register');
+    setAuthError('');
+  };
+
   window.authLogin = function() {
-    var btn = document.getElementById('btn-google-login');
-    var lbl = btn ? btn.querySelector('.auth-btn-label') : null;
-    if (btn) btn.disabled = true;
-    if (lbl) lbl.textContent = 'Entrando...';
- 
+    openAuthModal('login');
+  };
+
+  window.authGoogle = function() {
+    setAuthBusy(true);
     var provider = new firebase.auth.GoogleAuthProvider();
     provider.setCustomParameters({ prompt: 'select_account' });
- 
-    auth.signInWithPopup(provider).catch(function(e) {
+
+    auth.signInWithPopup(provider).then(function() {
+      closeAuthModal();
+    }).catch(function(e) {
       if (e.code !== 'auth/popup-closed-by-user') {
-        showToast('Erro ao entrar: ' + e.message, 'err');
+        setAuthError('Erro ao entrar com Google: ' + e.message);
       }
-      if (btn) btn.disabled = false;
-      if (lbl) lbl.textContent = 'Entrar com Google';
+      setAuthBusy(false);
+    });
+  };
+
+  window.authAnonymous = function() {
+    setAuthBusy(true);
+    auth.signInAnonymously().then(function() {
+      closeAuthModal();
+      showToast('Entrou como visitante.');
+    }).catch(function(e) {
+      setAuthError('Erro ao entrar anonimamente: ' + e.message);
+      setAuthBusy(false);
+    });
+  };
+
+  window.authEmailSubmit = function() {
+    var email = (document.getElementById('auth-email') || {}).value || '';
+    var pass = (document.getElementById('auth-pass') || {}).value || '';
+    email = email.trim();
+
+    if (!email || !pass) {
+      setAuthError('Preencha email e senha.');
+      return;
+    }
+    if (pass.length < 6) {
+      setAuthError('A senha precisa ter pelo menos 6 caracteres.');
+      return;
+    }
+
+    setAuthBusy(true);
+    var action = _authMode === 'register'
+      ? auth.createUserWithEmailAndPassword(email, pass)
+      : auth.signInWithEmailAndPassword(email, pass);
+
+    action.then(function() {
+      closeAuthModal();
+      showToast(_authMode === 'register' ? 'Conta criada!' : 'Login realizado!');
+    }).catch(function(e) {
+      var msg = e.message;
+      if (e.code === 'auth/email-already-in-use') msg = 'Este email ja tem uma conta. Use Entrar.';
+      if (e.code === 'auth/user-not-found' || e.code === 'auth/wrong-password') msg = 'Email ou senha incorretos.';
+      if (e.code === 'auth/operation-not-allowed') msg = 'Ative Email/Senha e Anonimo no Firebase Authentication.';
+      setAuthError(msg);
+      setAuthBusy(false);
     });
   };
  
@@ -2335,6 +2436,7 @@ window.authLogout = function() {
         displayName: user.displayName,
         email:       user.email,
         photoURL:    user.photoURL,
+        anonymous:   !!user.isAnonymous,
         lastLogin:   Date.now()
       }, { merge: true }).catch(function(){});
  
@@ -2395,12 +2497,41 @@ style.textContent = [
   '.auth-google-btn{display:flex;align-items:center;gap:9px;width:100%;padding:9px 10px;border-radius:8px;background:var(--sb-new-bg);border:1px solid var(--sb-tog-bd);color:var(--sb-tx-on);font-family:Inter,sans-serif;font-size:12px;font-weight:500;cursor:pointer;white-space:nowrap;overflow:hidden;transition:background .18s,transform .15s;margin-bottom:4px;}',
   '.auth-google-btn:hover{background:var(--sb-item-on);transform:translateX(2px);}',
   '.auth-google-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}',
+  '.auth-entry-btn{display:flex;align-items:center;gap:9px;width:100%;padding:9px 10px;border-radius:8px;background:var(--sb-new-bg);border:1px solid var(--sb-tog-bd);color:var(--sb-tx-on);font-family:Inter,sans-serif;font-size:12px;font-weight:500;cursor:pointer;white-space:nowrap;overflow:hidden;transition:background .18s,transform .15s;margin-bottom:4px;}',
+  '.auth-entry-btn:hover{background:var(--sb-item-on);transform:translateX(2px);}',
   '.auth-sync-row{display:flex;align-items:center;gap:6px;padding:4px 10px 6px;}',
   '.auth-sync-dot{width:6px;height:6px;border-radius:50%;background:#666;flex-shrink:0;transition:background .3s;}',
   '.auth-sync-label{font-size:10px;color:var(--sb-tx);font-family:Inter,sans-serif;}',
   '#sb-email{margin-top:1px;font-size:10px;color:var(--sb-tx);}',
   '.sb.col .auth-sync-row,.sb.col #sb-email{display:none!important;}',
-  '.sb.col .auth-btn-label{display:none!important;}'
+  '.sb.col .auth-btn-label{display:none!important;}',
+  '.auth-modal{position:fixed;inset:0;z-index:80;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.62);backdrop-filter:blur(10px);}',
+  '.auth-modal.on{display:flex;}',
+  '.auth-dialog{width:min(410px,100%);background:#262626;border:1px solid rgba(255,255,255,.10);border-radius:12px;box-shadow:0 24px 80px rgba(0,0,0,.52);padding:22px;color:var(--tx);animation:authIn .18s ease-out;}',
+  '@keyframes authIn{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}',
+  '.auth-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:18px;}',
+  '.auth-title{font-size:21px;font-weight:800;color:#fff;line-height:1.2;letter-spacing:0;}',
+  '.auth-sub{font-size:12px;color:#9a9a9a;margin-top:5px;line-height:1.45;}',
+  '.auth-close{width:32px;height:32px;border-radius:9px;border:1px solid rgba(255,255,255,.08);background:#1f1f1f;color:#d8d8d8;cursor:pointer;font-size:18px;transition:background .15s,color .15s;}',
+  '.auth-close:hover{background:#2f2f2f;color:#fff;}',
+  '.auth-tabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;border:1px solid rgba(255,255,255,.07);background:#1b1b1b;border-radius:10px;margin-bottom:14px;}',
+  '.auth-tab{border:0;border-radius:8px;background:transparent;color:#999;font-weight:800;font-size:12px;padding:10px;cursor:pointer;transition:background .15s,color .15s;}',
+  '.auth-tab.on{background:#d4b84a;color:#1a1200;}',
+  '.auth-form{display:flex;flex-direction:column;gap:10px;}',
+  '.auth-field{width:100%;border:1px solid rgba(255,255,255,.08);background:#1c1c1c;color:#fff;border-radius:10px;padding:13px 14px;font:600 13px Inter,sans-serif;outline:none;transition:border-color .15s,box-shadow .15s,background .15s;}',
+  '.auth-field::placeholder{color:#777;}',
+  '.auth-field:focus{border-color:#d4b84a;box-shadow:0 0 0 3px rgba(212,184,74,.14);background:#1a1a1a;}',
+  '.auth-primary{border:0;border-radius:10px;background:#d4b84a;color:#1a1200;font-weight:900;padding:12px;cursor:pointer;transition:filter .15s,transform .12s;}',
+  '.auth-primary:hover{filter:brightness(1.05);}',
+  '.auth-primary:active{transform:translateY(1px);}',
+  '.auth-provider{border:1px solid rgba(255,255,255,.08);border-radius:10px;background:#202020;color:#fff;font-weight:850;padding:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;transition:background .15s,border-color .15s;}',
+  '.auth-provider:hover{background:#242424;border-color:rgba(255,255,255,.14);}',
+  '.auth-anon{border:1px solid rgba(255,255,255,.08);border-radius:10px;background:transparent;color:#b5b5b5;font-weight:850;padding:12px;cursor:pointer;transition:background .15s,color .15s,border-color .15s;}',
+  '.auth-anon:hover{background:#202020;color:#fff;border-color:rgba(255,255,255,.14);}',
+  '.auth-sep{display:flex;align-items:center;gap:10px;color:#777;font-size:11px;margin:7px 0 5px;}',
+  '.auth-sep:before,.auth-sep:after{content:"";height:1px;background:var(--bd);flex:1;}',
+  '.auth-status{min-height:18px;color:#f87171;font-size:11px;line-height:1.4;margin-top:8px;}',
+  '.auth-modal button:disabled,.auth-modal input:disabled{opacity:.6;cursor:not-allowed;}'
 ].join('');
 document.head.appendChild(style);
  
@@ -2416,14 +2547,9 @@ if (sbBot) {
  
     // NÃO logado
     '<div id="auth-logged-out">',
-      '<button class="auth-google-btn" id="btn-google-login" onclick="authLogin()">',
-        '<svg width="14" height="14" viewBox="0 0 48 48" style="flex-shrink:0">',
-          '<path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.2l6.8-6.8C35.8 2.5 30.2 0 24 0 14.7 0 6.7 5.4 2.8 13.3l7.9 6.1C12.6 13.2 17.9 9.5 24 9.5z"/>',
-          '<path fill="#4285F4" d="M46.1 24.6c0-1.6-.1-3.1-.4-4.6H24v8.7h12.4c-.5 2.8-2.1 5.2-4.5 6.8l7 5.4c4.1-3.8 6.2-9.4 6.2-16.3z"/>',
-          '<path fill="#FBBC05" d="M10.7 28.6A14.5 14.5 0 0 1 9.5 24c0-1.6.3-3.1.7-4.6l-7.9-6.1A24 24 0 0 0 0 24c0 3.9.9 7.5 2.8 10.7l7.9-6.1z"/>',
-          '<path fill="#34A853" d="M24 48c6.2 0 11.4-2 15.2-5.5l-7-5.4c-2 1.4-4.6 2.2-8.2 2.2-6.1 0-11.4-3.7-13.3-9l-7.9 6.1C6.7 42.6 14.7 48 24 48z"/>',
-        '</svg>',
-        '<span class="auth-btn-label">Entrar com Google</span>',
+      '<button class="auth-entry-btn" id="btn-auth-open" onclick="openAuthModal(\'login\')">',
+        '<span class="nav-ic"><img src="icons/user.png" class="ic16" alt="" onerror="this.replaceWith(document.createTextNode(\'👤\'))"/></span>',
+        '<span class="auth-btn-label">Entrar ou continuar</span>',
       '</button>',
     '</div>',
  
@@ -2449,6 +2575,43 @@ if (sbBot) {
       '</button>',
     '</div>'
   ].join('');
+}
+
+if (!document.getElementById('auth-modal')) {
+  document.body.insertAdjacentHTML('beforeend', [
+    '<div class="auth-modal" id="auth-modal" aria-hidden="true" onclick="if(event.target===this) closeAuthModal()">',
+      '<div class="auth-dialog" role="dialog" aria-modal="true" aria-labelledby="auth-modal-title">',
+        '<div class="auth-head">',
+          '<div>',
+            '<div class="auth-title" id="auth-modal-title">Entrar</div>',
+            '<div class="auth-sub" id="auth-modal-sub">Escolha como quer acessar sua conta.</div>',
+          '</div>',
+          '<button class="auth-close" type="button" onclick="closeAuthModal()" aria-label="Fechar">×</button>',
+        '</div>',
+        '<div class="auth-tabs">',
+          '<button class="auth-tab on" id="auth-tab-login" type="button" onclick="setAuthMode(\'login\')">Entrar</button>',
+          '<button class="auth-tab" id="auth-tab-register" type="button" onclick="setAuthMode(\'register\')">Criar conta</button>',
+        '</div>',
+        '<div class="auth-form">',
+          '<input class="auth-field" id="auth-email" type="email" autocomplete="email" placeholder="Email">',
+          '<input class="auth-field" id="auth-pass" type="password" autocomplete="current-password" placeholder="Senha">',
+          '<button class="auth-primary" id="auth-email-submit" type="button" onclick="authEmailSubmit()">Entrar com email</button>',
+          '<div class="auth-sep">ou</div>',
+          '<button class="auth-provider" type="button" onclick="authGoogle()">',
+            '<svg width="15" height="15" viewBox="0 0 48 48" aria-hidden="true">',
+              '<path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.2l6.8-6.8C35.8 2.5 30.2 0 24 0 14.7 0 6.7 5.4 2.8 13.3l7.9 6.1C12.6 13.2 17.9 9.5 24 9.5z"/>',
+              '<path fill="#4285F4" d="M46.1 24.6c0-1.6-.1-3.1-.4-4.6H24v8.7h12.4c-.5 2.8-2.1 5.2-4.5 6.8l7 5.4c4.1-3.8 6.2-9.4 6.2-16.3z"/>',
+              '<path fill="#FBBC05" d="M10.7 28.6A14.5 14.5 0 0 1 9.5 24c0-1.6.3-3.1.7-4.6l-7.9-6.1A24 24 0 0 0 0 24c0 3.9.9 7.5 2.8 10.7l7.9-6.1z"/>',
+              '<path fill="#34A853" d="M24 48c6.2 0 11.4-2 15.2-5.5l-7-5.4c-2 1.4-4.6 2.2-8.2 2.2-6.1 0-11.4-3.7-13.3-9l-7.9 6.1C6.7 42.6 14.7 48 24 48z"/>',
+            '</svg>',
+            'Entrar com Google',
+          '</button>',
+          '<button class="auth-anon" type="button" onclick="authAnonymous()">Continuar anônimo</button>',
+        '</div>',
+        '<div class="auth-status" id="auth-modal-status"></div>',
+      '</div>',
+    '</div>'
+  ].join(''));
 }
  
 function loadScript(src, cb) {
