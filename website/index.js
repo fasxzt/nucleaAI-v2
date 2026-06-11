@@ -1494,9 +1494,19 @@ async function callAI(prompt, image) {
     : prompt;
 
   if (!key) {
+    var backendHeaders = { 'Content-Type': 'application/json' };
+    try {
+      if (window.firebase && firebase.appCheck) {
+        var appCheck = await firebase.appCheck().getToken(false);
+        if (appCheck && appCheck.token) backendHeaders['X-Firebase-AppCheck'] = appCheck.token;
+      }
+    } catch(e) {
+      console.warn('[NucleaAI] App Check para backend:', e);
+    }
+
     var apiRes = await fetch('/api/mistral', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: backendHeaders,
       body: JSON.stringify({ model: model, content: content })
     });
     var apiData = await apiRes.json().catch(function() { return {}; });
