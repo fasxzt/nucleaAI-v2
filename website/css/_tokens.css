@@ -1,0 +1,130 @@
+/* ============================================================
+   _tokens.css — NucleaAI · Design tokens (tema escuro/claro)
+   Identidade corporativa: fundo #171717, dourado #d4b84a,
+   azul #3d5a9e, Inter + Lora
+   ============================================================ */
+
+:root {
+  --sb-w:   240px;
+  --sb-col: 56px;
+
+  --sb-bg:       #262626;
+  --sb-bd:       rgba(255,255,255,0.06);
+  --sb-tx:       rgba(255,255,255,0.55);
+  --sb-tx-on:    #ffffff;
+  --sb-item-on:  rgba(255,255,255,0.10);
+  --sb-item-hov: rgba(255,255,255,0.06);
+  --sb-tog-bg:   #262626;
+  --sb-tog-bd:   rgba(255,255,255,0.09);
+  --sb-tog-col:  rgba(255,255,255,0.60);
+  --sb-top-bd:   rgba(255,255,255,0.06);
+  --sb-bot-bd:   rgba(255,255,255,0.06);
+  --sb-usr-hov:  rgba(255,255,255,0.05);
+  --sb-un-col:   rgba(255,255,255,0.55);
+  --sb-lt-col:   #ffffff;
+  --sb-lt-span:  var(--ac2);
+  --sb-ic-filt:  brightness(0) invert(1);
+  --sb-new-bg:   rgba(212,184,74,0.08);
+  --sb-new-hov:  rgba(212,184,74,0.14);
+  --sb-badge-bg: var(--ac2);
+  --sb-badge-tx: #221900;
+  --sb-mob-bg:   #262626;
+
+  --bg:     #171717;
+  --bg2:    #262626;
+  --bg3:    #1f1f1f;
+  --bg4:    #2e2e2e;
+  --bd:     rgba(255,255,255,0.06);
+  --bd2:    rgba(255,255,255,0.11);
+  --tx:     #ffffff;
+  --tx2:    #888888;
+  --tx3:    #aaaaaa;
+
+  --ac:     #3d5a9e;
+  --ac2:    #d4b84a;
+
+  --gn:  #4ADE80; --gn2: rgba(74,222,128,0.09);
+  --rd:  #F87171; --rd2: rgba(248,113,113,0.09);
+  --yw:  #FBBF24; --yw2: rgba(251,191,36,0.09);
+  --pu:  #A78BFA; --pu2: rgba(167,139,250,0.10);
+
+  --r: 10px; --rs: 8px;
+  --r-lg: 16px;
+
+  /* Sombras corporativas */
+  --shadow-sm:    0 2px 10px rgba(0,0,0,.32);
+  --shadow-md:    0 6px 24px rgba(0,0,0,.48);
+  --shadow-lift:  0 16px 44px rgba(0,0,0,.52);
+  --shadow-gold:  0 0 0 1px rgba(212,184,74,.30), 0 10px 34px rgba(212,184,74,.12);
+
+  /* Gradientes institucionais */
+  --grad-gold: linear-gradient(135deg, #e8ca5a 0%, #d4b84a 45%, #b8960a 100%);
+  --grad-blue: linear-gradient(135deg, #5a7fd0 0%, #3d5a9e 55%, #2a3f6d 100%);
+
+  /* Brilho de fundo estilo landing page */
+  --body-glow:
+    radial-gradient(1100px 660px at 82% -10%, rgba(61,90,158,.16), transparent 62%),
+    radial-gradient(900px 560px at -8% 108%, rgba(212,184,74,.08), transparent 55%);
+
+  /* Frosted glass (topbar) */
+  --glass-bg: rgba(23,23,23,.74);
+  --glass-bd: rgba(255,255,255,.07);
+}
+
+/* ─────────────────────────── tema claro ─────────────────────────── */
+body.light {
+  --sb-bg:       #f0eeea;
+  --sb-bd:       rgba(0,0,0,0.08);
+  --sb-tx:       #6b6760;
+  --sb-tx-on:    #1a1917;
+  --sb-item-on:  rgba(0,0,0,0.09);
+  --sb-item-hov: rgba(0,0,0,0.05);
+  --sb-tog-bg:   #e8e6e1;
+  --sb-tog-bd:   rgba(0,0,0,0.15);
+  --sb-tog-col:  #6b6760;
+  --sb-top-bd:   rgba(0,0,0,0.08);
+  --sb-bot-bd:   rgba(0,0,0,0.08);
+  --sb-usr-hov:  rgba(0,0,0,0.05);
+  --sb-un-col:   #6b6760;
+  --sb-lt-col:   #1a1917;
+  --sb-lt-span:  #b8960a;
+  --sb-ic-filt:  brightness(0);
+  --sb-new-bg:   rgba(184,150,10,0.08);
+  --sb-new-hov:  rgba(184,150,10,0.16);
+  --sb-badge-bg: #b8960a;
+  --sb-badge-tx: #ffffff;
+  --sb-mob-bg:   #f0eeea;
+
+  --bg:     #f3f4ef;
+  --bg2:    #ffffff;
+  --bg3:    #f0eeea;
+  --bg4:    #e8e6e1;
+  --bd:     rgba(0,0,0,0.09);
+  --bd2:    rgba(0,0,0,0.15);
+  --tx:     #1a1917;
+  --tx2:    #6b6760;
+  --tx3:    #4a4845;
+
+  --ac:     #3B3730;
+  --ac2:    #b8960a;
+
+  --gn:  #1a7a3a; --gn2: rgba(26,122,58,0.10);
+  --rd:  #b02020; --rd2: rgba(176,32,32,0.09);
+  --yw:  #8a6200; --yw2: rgba(138,98,0,0.10);
+  --pu:  #5b3eb5; --pu2: rgba(91,62,181,0.09);
+
+  --shadow-sm:   0 2px 8px rgba(0,0,0,.08);
+  --shadow-md:   0 6px 22px rgba(0,0,0,.12);
+  --shadow-lift: 0 14px 40px rgba(0,0,0,.16);
+  --shadow-gold: 0 0 0 1px rgba(184,150,10,.35), 0 10px 30px rgba(184,150,10,.10);
+
+  --grad-gold: linear-gradient(135deg, #caa93c 0%, #b8960a 55%, #8a6d02 100%);
+  --grad-blue: linear-gradient(135deg, #5a7fd0 0%, #3d5a9e 100%);
+
+  --body-glow:
+    radial-gradient(1100px 660px at 82% -10%, rgba(61,90,158,.10), transparent 62%),
+    radial-gradient(900px 560px at -8% 108%, rgba(212,184,74,.07), transparent 55%);
+
+  --glass-bg: rgba(243,244,239,.78);
+  --glass-bd: rgba(0,0,0,.08);
+}

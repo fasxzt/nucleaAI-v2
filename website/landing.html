@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NucleaAI — Seu assistente de estudos com IA</title>
+  <meta name="description" content="O NucleaAI é um assistente de estudos com inteligência artificial: chat com IA, flashcards inteligentes, tarefas, agenda, progresso e voz — tudo em português." />
+  <link rel="icon" type="image/png" href="icons/atomo.png" />
+  <link rel="stylesheet" href="css/landing.css" />
+</head>
+<body>
+
+  <!-- ══════════════ NAVBAR ══════════════ -->
+  <header class="l-nav" id="l-nav">
+    <a class="l-nav-logo" href="#top">
+      <span class="l-nav-logo-box">
+        <img src="icons/atomo.png" alt="" onerror="this.replaceWith(document.createTextNode('⚛'))" />
+      </span>
+      <span class="l-nav-logo-tx">Nu<span>clea</span>AI</span>
+    </a>
+
+    <nav class="l-nav-links">
+      <a href="#recursos">Recursos</a>
+      <a href="#como-funciona">Como funciona</a>
+      <a href="#depoimentos">Depoimentos</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+
+    <div class="l-nav-cta">
+      <a href="index.html" class="l-btn l-btn-ghost l-btn-sm">Entrar</a>
+      <a href="index.html" class="l-btn l-btn-solid l-btn-sm">Começar grátis</a>
+    </div>
+  </header>
+
+  <!-- ══════════════ HERO ══════════════ -->
+  <section class="l-hero" id="top">
+    <div class="l-hero-badge">Novo · Assistente de estudos com IA</div>
+
+    <h1 class="l-hero-title">
+      O seu melhor <span class="l-hi"><em>companheiro</em></span><br />
+      para aprender com <em>inteligência</em>
+    </h1>
+
+    <p class="l-hero-sub">
+      Converse, estude e revise com o <strong>NucleaAI</strong>: chat com IA, flashcards
+      inteligentes, tarefas, agenda e acompanhamento do seu progresso — tudo em um só lugar, em português.
+    </p>
+
+    <div class="l-hero-cta">
+      <a href="#como-funciona" class="l-btn l-btn-solid">Começar grátis</a>
+      <a href="#recursos" class="l-btn l-btn-ghost">Ver recursos</a>
+    </div>
+
+    <div class="l-hero-note"><span class="ok-dot"></span> Sem cartão de crédito · Modelo gratuito incluído</div>
+
+    <!-- Mock de chat inspirado no ChatGPT / Claude -->
+    <div class="l-hero-chat">
+      <div class="l-hero-chat-head">
+        <span class="l-dot" style="--c:#F87171"></span>
+        <span class="l-dot" style="--c:#FBBF24"></span>
+        <span class="l-dot" style="--c:#4ADE80"></span>
+        <span class="l-hero-chat-title">
+          <img src="icons/atomo.png" alt="" onerror="this.replaceWith(document.createTextNode('⚛'))" />
+          NucleaAI
+        </span>
+      </div>
+      <div class="l-hero-chat-body">
+        <div class="l-hero-greet">Como posso te ajudar a estudar hoje?</div>
+
+        <div class="l-hero-sugs">
+          <div class="l-hero-sug sug-1">
+            <span class="sug-icon">🧠</span>
+            <span>Resuma o capítulo de Biologia que estou lendo</span>
+          </div>
+          <div class="l-hero-sug sug-2">
+            <span class="sug-icon">🃏</span>
+            <span>Crie flashcards para revisar a matéria</span>
+          </div>
+          <div class="l-hero-sug sug-3">
+            <span class="sug-icon">🗓</span>
+            <span>Monte meu plano de estudos da semana</span>
+          </div>
+          <div class="l-hero-sug sug-4">
+            <span class="sug-icon">📊</span>
+            <span>Explica porcentagem com exemplos do dia a dia</span>
+          </div>
+        </div>
+
+        <div class="l-hero-input">
+          <textarea rows="1" placeholder="Como posso ajudar você hoje?"></textarea>
+          <button class="l-hero-send" aria-label="Enviar">➜</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════ FAIXA DE PÚBLICO ══════════════ -->
+  <div class="l-strip">
+    <span>Feito para</span>
+    <div class="l-strip-items">
+      <span>📚 Ensino médio</span>
+      <span>🎓 Vestibular &amp; ENEM</span>
+      <span>🏛 Faculdade</span>
+      <span>✍️ Concursos</span>
+      <span>👨‍💻 Autodidatas</span>
+    </div>
+  </div>
+
+  <!-- ══════════════ RECURSOS ══════════════ -->
+  <section class="l-sec" id="recursos">
+    <div class="l-sec-head reveal">
+      <span class="l-kicker">Recursos</span>
+      <h2>Tudo o que você precisa para <em>aprender de verdade</em></h2>
+      <p>O NucleaAI combina um chat com inteligência artificial e ferramentas completas de estudo em uma única plataforma.</p>
+    </div>
+
+    <div class="l-feats">
+      <article class="l-feat reveal" style="--f1:var(--gold);--f2:var(--yw)">
+        <div class="l-feat-icon fi-gold"><img src="icons/bubble-chat.png" alt="" onerror="this.replaceWith(document.createTextNode('💬'))"/></div>
+        <h3>Chat com IA</h3>
+        <p>Converse com a Núclea, uma IA didática e em português, que responde com exemplos do seu cotidiano.</p>
+        <span class="l-feat-tag">Aprenda conversando</span>
+      </article>
+
+      <article class="l-feat reveal" data-del="1" style="--f1:var(--pu);--f2:var(--blue-lt)">
+        <div class="l-feat-icon fi-purp"><img src="icons/layers.png" alt="" onerror="this.replaceWith(document.createTextNode('🃏'))"/></div>
+        <h3>Flashcards inteligentes</h3>
+        <p>Gere cartões a partir de qualquer tema, com perguntas diretas e múltipla escolha, e revise quando quiser.</p>
+        <span class="l-feat-tag">Revisão ativa</span>
+      </article>
+
+      <article class="l-feat reveal" data-del="2" style="--f1:var(--blue);--f2:var(--blue-lt)">
+        <div class="l-feat-icon fi-blue"><img src="icons/clipboard.png" alt="" onerror="this.replaceWith(document.createTextNode('☑'))"/></div>
+        <h3>Tarefas &amp; kanban</h3>
+        <p>Organize seus estudos num quadro visual, com prioridades, categorias, datas de entrega e arrastar e soltar.</p>
+        <span class="l-feat-tag">Produtividade</span>
+      </article>
+
+      <article class="l-feat reveal" data-del="3" style="--f1:var(--yw);--f2:var(--gold)">
+        <div class="l-feat-icon fi-yell"><img src="icons/calendar-clock.png" alt="" onerror="this.replaceWith(document.createTextNode('📅'))"/></div>
+        <h3>Agenda</h3>
+        <p>Monte seu calendário de compromissos e estudos com eventos coloridos e agendamento por dia e horário.</p>
+        <span class="l-feat-tag">Planeje seu tempo</span>
+      </article>
+
+      <article class="l-feat reveal" style="--f1:var(--gn);--f2:var(--blue-lt)">
+        <div class="l-feat-icon fi-green"><img src="icons/grafico-de-barras.png" alt="" onerror="this.replaceWith(document.createTextNode('📊'))"/></div>
+        <h3>Progresso</h3>
+        <p>Veja sua taxa de acerto, desempenho por tema e recomendações de revisão para nunca mais esquecer.</p>
+        <span class="l-feat-tag">Enxergue sua evolução</span>
+      </article>
+
+      <article class="l-feat reveal" data-del="1" style="--f1:var(--red, #F87171);--f2:var(--gold)">
+        <div class="l-feat-icon fi-red"><img src="icons/microfone.png" alt="" onerror="this.replaceWith(document.createTextNode('🎙'))"/></div>
+        <h3>Assistente de voz</h3>
+        <p>Estude sem digitar: fale com o NucleaAI e ouça as respostas com uma voz natural em português.</p>
+        <span class="l-feat-tag">Mãos livres</span>
+      </article>
+
+      <article class="l-feat reveal" data-del="2" style="--f1:var(--blue-lt);--f2:var(--pu)">
+        <div class="l-feat-icon fi-blue"><img src="icons/historia.png" alt="" onerror="this.replaceWith(document.createTextNode('🗂'))"/></div>
+        <h3>Histórico de conversas</h3>
+        <p>Reencontre qualquer conversa na hora, com busca e prévia das mensagens. Nada se perde.</p>
+        <span class="l-feat-tag">Contexto sempre</span>
+      </article>
+
+      <article class="l-feat reveal" data-del="3" style="--f1:var(--yw);--f2:var(--gold)">
+        <div class="l-feat-icon fi-yell"><img src="icons/trophy.png" alt="" onerror="this.replaceWith(document.createTextNode('🏆'))"/></div>
+        <h3>Conquistas &amp; XP</h3>
+        <p>Ganhe experiência e desbloqueie conquistas enquanto estuda. Aprender nunca foi tão motivador.</p>
+        <span class="l-feat-tag">Gamificação</span>
+      </article>
+    </div>
+  </section>
+
+  <!-- ══════════════ COMO FUNCIONA ══════════════ -->
+  <section class="l-sec l-sec-alt" id="como-funciona">
+    <div class="l-sec-head reveal">
+      <span class="l-kicker">Como funciona</span>
+      <h2>Do zero à aprovação em <em>três passos</em></h2>
+      <p>Sem instalação e sem complicação. O NucleaAI é a sua sala de estudos inteligente, pronta para usar.</p>
+    </div>
+
+    <div class="l-steps">
+      <div class="l-step reveal">
+        <div class="l-step-num">01</div>
+        <div class="l-step-line"></div>
+        <h3>Peça ajuda à IA</h3>
+        <p>Escreva ou fale com a Núclea: resumos, explicações, dúvidas e exemplos na hora, no seu ritmo.</p>
+      </div>
+      <div class="l-step reveal" data-del="1">
+        <div class="l-step-num">02</div>
+        <div class="l-step-line"></div>
+        <h3>Revise com flashcards</h3>
+        <p>Transforme a matéria em cartões de revisão e pratique até fixar. A IA gera o deck pelo tema.</p>
+      </div>
+      <div class="l-step reveal" data-del="2">
+        <div class="l-step-num">03</div>
+        <div class="l-step-line"></div>
+        <h3>Acompanhe sua evolução</h3>
+        <p>Organize tarefas e agenda, meça sua taxa de acerto e receba recomendações para revisar periodicamente.</p>
+      </div>
+    </div>
+
+    <div class="l-steps-cta reveal">
+      <a href="index.html" class="l-btn l-btn-blue">Entrar no NucleaAI →</a>
+    </div>
+  </section>
+
+  <!-- ══════════════ NÚMEROS ══════════════ -->
+  <section class="l-sec">
+    <div class="l-stats">
+      <div class="l-stat reveal">
+        <div class="l-stat-val">+6</div>
+        <div class="l-stat-lbl">ferramentas de estudo integradas</div>
+      </div>
+      <div class="l-stat reveal" data-del="1">
+        <div class="l-stat-val">100%</div>
+        <div class="l-stat-lbl">grátis para começar</div>
+      </div>
+      <div class="l-stat reveal" data-del="2">
+        <div class="l-stat-val">3×</div>
+        <div class="l-stat-lbl">mais fixação com revisão ativa</div>
+      </div>
+      <div class="l-stat reveal" data-del="3">
+        <div class="l-stat-val">pt-BR</div>
+        <div class="l-stat-lbl">IA que fala a sua língua</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════ DEPOIMENTOS ══════════════ -->
+  <section class="l-sec l-sec-alt" id="depoimentos">
+    <div class="l-sec-head reveal">
+      <span class="l-kicker">Depoimentos</span>
+      <h2>Quem estuda com o NucleaAI <em>recomenda</em></h2>
+      <p>Estudantes reais usando a IA para aprender mais rápido e com mais consistência.</p>
+    </div>
+
+    <div class="l-testis">
+      <article class="l-testi reveal">
+        <div class="l-testi-stars">★★★★★</div>
+        <p class="l-testi-q">“Pedi para a IA explicar Revolução Francesa com exemplos de hoje e finalmente entendi. Os flashcards mudaram minha revisão.”</p>
+        <div class="l-testi-user">
+          <span class="l-testi-av" style="--tav:linear-gradient(135deg,#3d5a9e,#6c8ef5)">M</span>
+          <div>
+            <div class="l-testi-name">Mariana S.</div>
+            <div class="l-testi-role">Vestibulanda · 3º ano</div>
+          </div>
+        </div>
+      </article>
+
+      <article class="l-testi reveal" data-del="1">
+        <div class="l-testi-stars">★★★★★</div>
+        <p class="l-testi-q">“Estudar pela voz enquanto estou no ônibus é surreal. Organizo tarefas no kanban e a agenda me lembra de tudo.”</p>
+        <div class="l-testi-user">
+          <span class="l-testi-av" style="--tav:linear-gradient(135deg,#d4b84a,#8f7a1e)">L</span>
+          <div>
+            <div class="l-testi-name">Lucas R.</div>
+            <div class="l-testi-role">Graduando em Engenharia</div>
+          </div>
+        </div>
+      </article>
+
+      <article class="l-testi reveal" data-del="2">
+        <div class="l-testi-stars">★★★★★</div>
+        <p class="l-testi-q">“O acompanhamento de progresso me faz estudar todo dia por causa das conquistas. É viciante — no bom sentido!”</p>
+        <div class="l-testi-user">
+          <span class="l-testi-av" style="--tav:linear-gradient(135deg,#7c3aed,#a78bfa)">A</span>
+          <div>
+            <div class="l-testi-name">Ana P.</div>
+            <div class="l-testi-role">Concurseira</div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ══════════════ FAQ ══════════════ -->
+  <section class="l-sec" id="faq">
+    <div class="l-sec-head reveal">
+      <span class="l-kicker">FAQ</span>
+      <h2>Perguntas <em>frequentes</em></h2>
+      <p>Respondemos as dúvidas mais comuns sobre o NucleaAI.</p>
+    </div>
+
+    <div class="l-faq">
+      <details class="l-faq-item reveal">
+        <summary>O NucleaAI é gratuito? <span class="l-faq-chev">+</span></summary>
+        <div class="l-faq-body">Sim! Você pode começar sem pagar nada, usando o modelo gratuito incluído. Caso queira respostas ainda melhores, basta usar sua própria chave de API Mistral nas configurações — fica do seu jeito.</div>
+      </details>
+
+      <details class="l-faq-item reveal" data-del="1">
+        <summary>Preciso instalar algum programa? <span class="l-faq-chev">+</span></summary>
+        <div class="l-faq-body">Não. O NucleaAI roda direto no navegador, em computadores, tablets e celulares. Seus dados são salvos localmente no seu dispositivo.</div>
+      </details>
+
+      <details class="l-faq-item reveal" data-del="2">
+        <summary>Como funciona o assistente de voz? <span class="l-faq-chev">+</span></summary>
+        <div class="l-faq-body">Você fala pelo microfone, a IA escuta, entende e responde em voz alta. Pode usar o motor do navegador ou uma voz natural via camb.ai nas configurações.</div>
+      </details>
+
+      <details class="l-faq-item reveal" data-del="3">
+        <summary>Em quais idiomas a IA responde? <span class="l-faq-chev">+</span></summary>
+        <div class="l-faq-body">O NucleaAI é feito para falar português do Brasil, mas você pode escolher inglês ou espanhol no painel de configurações.</div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ══════════════ CTA FINAL ══════════════ -->
+  <section class="l-cta">
+    <h2 class="reveal">Pronto para dar o próximo passo <em>nos seus estudos?</em></h2>
+    <p class="reveal" data-del="1">Crie sua rotina de estudos inteligente agora e comece a aprender como você nunca aprendeu.</p>
+    <div class="l-hero-cta reveal" data-del="2" style="justify-content:center">
+      <a href="index.html" class="l-btn l-btn-solid">Começar grátis</a>
+    </div>
+    <div class="l-hero-note reveal" data-del="3"><span class="ok-dot"></span> Leva menos de um minuto</div>
+  </section>
+
+  <!-- ══════════════ FOOTER ══════════════ -->
+  <footer class="l-foot">
+    <div class="l-foot-grid">
+      <div class="l-foot-brand">
+        <a class="l-nav-logo" href="#top">
+          <span class="l-nav-logo-box">
+            <img src="icons/atomo.png" alt="" onerror="this.replaceWith(document.createTextNode('⚛'))" />
+          </span>
+          <span class="l-nav-logo-tx">Nu<span>clea</span>AI</span>
+        </a>
+        <p>O assistente de estudos com inteligência artificial que conversa, ensina e acompanha você até a aprovação.</p>
+      </div>
+
+      <div>
+        <h4>Produto</h4>
+        <ul>
+          <li><a href="#recursos">Recursos</a></li>
+          <li><a href="#como-funciona">Como funciona</a></li>
+          <li><a href="#depoimentos">Depoimentos</a></li>
+          <li><a href="#faq">FAQ</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>Estudo</h4>
+        <ul>
+          <li><a href="index.html">Chat com IA</a></li>
+          <li><a href="index.html">Flashcards</a></li>
+          <li><a href="index.html">Tarefas</a></li>
+          <li><a href="index.html">Agenda</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>Conta</h4>
+        <ul>
+          <li><a href="index.html">Acessar o app</a></li>
+          <li><a href="index.html">Começar grátis</a></li>
+          <li><a href="index.html">Configurações</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="l-foot-bottom">
+      <p>© 2026 NucleaAI. Todos os direitos reservados.</p>
+      <div class="l-foot-socials">
+        <a href="#" aria-label="GitHub">GH</a>
+        <a href="#" aria-label="Instagram">IG</a>
+        <a href="#" aria-label="YouTube">YT</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      var nav = document.getElementById('l-nav');
+      function onScroll() {
+        if (window.scrollY > 12) nav.classList.add('scrolled');
+        else nav.classList.remove('scrolled');
+      }
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+
+      var reveals = document.querySelectorAll('.reveal');
+      if ('IntersectionObserver' in window) {
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) {
+            if (e.isIntersecting) {
+              e.target.classList.add('in');
+              io.unobserve(e.target);
+            }
+          });
+        }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+        reveals.forEach(function (el) { io.observe(el); });
+      } else {
+        reveals.forEach(function (el) { el.classList.add('in'); });
+      }
+    })();
+  </script>
+
+</body>
+</html>
