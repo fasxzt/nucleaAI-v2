@@ -1,0 +1,40 @@
+# dependencies
+node_modules/
+
+# environment variables
+.env
+.env.*
+!.env.example
+
+# Vercel local config
+.vercel/
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# editor settings
+.vscode/
+.idea/
+
+# build/cache output
+dist/
+build/
+.cache/
+
+# security - nunca commitar estes arquivos
+*.key
+*.pem
+*.cert
+*.p12
+serviceAccountKey.json
+firebase-adminsdk*.json
+
+# debug tokens
+debug*.token
+*.debug
