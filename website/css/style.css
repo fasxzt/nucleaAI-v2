@@ -1,0 +1,18 @@
+/* ============================================================
+   style.css — NucleaAI · Ponto de entrada do app
+   Organização:
+     1. _tokens.css     → design tokens (temas escuro/claro)
+     2. _base.css       → reset, tipografia, keyframes, ícones
+     3. _layout.css     → sidebar, topbar corporativa, painéis
+     4. _components.css → botões, campos, chat, toast
+     5. _modules.css    → agenda, tarefas, flashcards, progresso,
+                          config, conquistas, voz, histórico
+     6. _responsive.css → media queries (tablet e mobile)
+   ============================================================ */
+
+@import url('_tokens.css');
+@import url('_base.css');
+@import url('_layout.css');
+@import url('_components.css');
+@import url('_modules.css');
+@import url('_responsive.css');

@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>NucleaAI</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
 
@@ -125,6 +125,19 @@
 <div class="sb-overlay" id="sb-overlay" onclick="closeMobSb()"></div>
 
 <div class="main">
+  <header class="main-topbar">
+    <div class="mt-brand">
+      <span class="mt-logo">
+        <img src="icons/atomo.png" alt=""
+             onerror="this.replaceWith(document.createTextNode('⚛'))"/>
+      </span>
+      <span class="mt-title">Nu<span>clea</span>AI</span>
+    </div>
+    <div class="mt-right">
+      <button class="mt-theme" onclick="toggleTheme()" title="Alternar tema">◐</button>
+      <span class="mt-chip"><i></i>Online</span>
+    </div>
+  </header>
   <div class="mob-topbar" id="mob-topbar">
     <button class="mob-menu-btn" onclick="openMobSb()">☰</button>
     <div class="mob-title">Nu<span>clea</span>AI</div>

@@ -7,6 +7,123 @@ function closeMobSb() {
   document.getElementById('sb-overlay').classList.remove('mob-open');
 }
 
+// ============================================
+// MÓDULO DE SEGURANÇA - SECURITY MODULE
+// ============================================
+var Security = {
+  // Sanitização de inputs - prevenir XSS
+  sanitize: function(input) {
+    if (typeof input !== 'string') return '';
+    var div = document.createElement('div');
+    div.textContent = input;
+    return div.innerHTML;
+  },
+
+  // Validação de email
+  validateEmail: function(email) {
+    var re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
+  },
+
+  // Validação de senha (mínimo 8 caracteres, 1 maiúscula, 1 número)
+  validatePassword: function(password) {
+    return password && password.length >= 8;
+  },
+
+  // Proteção contra CSRF - gerar token
+  generateCSRFToken: function() {
+    var array = new Uint8Array(32);
+    window.crypto.getRandomValues(array);
+    return Array.from(array, function(byte) {
+      return byte.toString(16).padStart(2, '0');
+    }).join('');
+  },
+
+  // Salvar token CSRF em cookie seguro
+  setCSRFToken: function() {
+    var token = this.generateCSRFToken();
+    document.cookie = 'csrf_token=' + token + '; path=/; max-age=3600; SameSite=Strict; Secure';
+    sessionStorage.setItem('csrf_token', token);
+    return token;
+  },
+
+  // Verificar token CSRF
+  verifyCSRFToken: function() {
+    var cookieToken = document.cookie.match(/csrf_token=([^;]+)/);
+    var sessionToken = sessionStorage.getItem('csrf_token');
+    return cookieToken && sessionToken && cookieToken[1] === sessionToken;
+  },
+
+  // Rate limiting no cliente
+  _rateLimitMap: {},
+  checkRateLimit: function(action, maxRequests, windowMs) {
+    maxRequests = maxRequests || 5;
+    windowMs = windowMs || 60000;
+    
+    var now = Date.now();
+    var record = this._rateLimitMap[action];
+    
+    if (!record || now - record.windowStart > windowMs) {
+      this._rateLimitMap[action] = { windowStart: now, count: 1 };
+      return true;
+    }
+    
+    if (record.count >= maxRequests) {
+      return false;
+    }
+    
+    record.count++;
+    return true;
+  },
+
+  // Validação de dados antes de enviar
+  validateData: function(data, allowedFields) {
+    var sanitized = {};
+    for (var field in data) {
+      if (allowedFields.indexOf(field) !== -1) {
+        if (typeof data[field] === 'string') {
+          sanitized[field] = this.sanitize(data[field]);
+        } else {
+          sanitized[field] = data[field];
+        }
+      }
+    }
+    return sanitized;
+  },
+
+  // Proteger cookies com flags de segurança
+  setSecureCookie: function(name, value, days) {
+    var expires = new Date(Date.now() + days * 864e5).toUTCString();
+    document.cookie = name + '=' + encodeURIComponent(value) + 
+      '; expires=' + expires + 
+      '; path=/; SameSite=Strict; Secure';
+  },
+
+  // Ler cookie seguro
+  getSecureCookie: function(name) {
+    var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+    return match ? decodeURIComponent(match[2]) : null;
+  },
+
+  // Limpar dados sensíveis ao fazer logout
+  clearSensitiveData: function() {
+    sessionStorage.removeItem('csrf_token');
+    localStorage.removeItem('fl_chats');
+    localStorage.removeItem('fl_tasks');
+    localStorage.removeItem('fl_events');
+    localStorage.removeItem('fl_prog');
+    localStorage.removeItem('fl_aiConfig');
+    localStorage.removeItem('fl_fcConfig');
+    localStorage.removeItem('fl_elConfig');
+    localStorage.removeItem('fl_username');
+    localStorage.removeItem('fl_theme');
+    localStorage.removeItem('ach_voz_count');
+  }
+};
+
+// Inicializar CSRF token
+Security.setCSRFToken();
+
 var S = {
   apiKey: '',
   model: 'open-mixtral-8x7b',
@@ -1487,11 +1604,20 @@ function updateEngineBadge() {
 }
 
 async function callAI(prompt, image) {
+  // Rate limiting no cliente
+  if (!Security.checkRateLimit('callAI', 10, 60000)) {
+    throw new Error('Muitas requisições. Aguarde um momento.');
+  }
+
   var key = S.apiKey || (document.getElementById('api-key') && document.getElementById('api-key').value.trim());
   var model = S.model || 'open-mixtral-8x7b';
+  
+  // Sanitizar prompt
+  var sanitizedPrompt = Security.sanitize(prompt);
+  
   var content = image
-    ? [{ type: 'text', text: prompt }, { type: 'image_url', image_url: image.dataUrl }]
-    : prompt;
+    ? [{ type: 'text', text: sanitizedPrompt }, { type: 'image_url', image_url: image.dataUrl }]
+    : sanitizedPrompt;
 
   if (!key) {
     var backendHeaders = { 'Content-Type': 'application/json' };
