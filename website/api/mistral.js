@@ -200,17 +200,17 @@ module.exports = async function handler(req, res) {
 };
 
 async function callMistral(apiKey, model, content) {
-  const MAX_RETRIES = 4;
-  const BACKOFF_MS = [1000, 2500, 6000, 12000];
-  const DEADLINE_MS = 50000;
+  const MAX_RETRIES = 5;
+  const BASE_WAIT_MS = 65000;
 
   const started = Date.now();
 
   for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
     if (attempt > 0) {
       const elapsed = Date.now() - started;
-      const wait = Math.min(BACKOFF_MS[attempt - 1], Math.max(200, DEADLINE_MS - elapsed));
-      if (wait <= 0) break;
+      const maxWait = 180000 - elapsed;
+      if (maxWait <= 0) break;
+      const wait = Math.min(BASE_WAIT_MS + attempt * 1000, maxWait);
       await sleep(wait);
     }
 
@@ -224,21 +224,17 @@ async function callMistral(apiKey, model, content) {
         },
         body: JSON.stringify({
           model: model,
-          max_tokens: 1000,
+          max_tokens: 400,
           messages: [{ role: 'user', content: content }]
         })
       });
     } catch (netErr) {
-      const elapsed = Date.now() - started;
-      const canRetry = attempt < MAX_RETRIES && elapsed < DEADLINE_MS;
-      if (!canRetry) throw { message: 'Erro de rede na Mistral: ' + netErr.message };
-      continue;
+      if (attempt < MAX_RETRIES) continue;
+      throw { message: 'Erro de rede na Mistral: ' + netErr.message };
     }
 
-    const data = await mistralRes.json().catch(function() { return {}; });
-    const responseError = data.message || data.error || 'Erro na Mistral';
-
     if (mistralRes.ok) {
+      const data = await mistralRes.json().catch(function() { return {}; });
       const answer = data && data.choices && data.choices[0] && data.choices[0].message
         ? data.choices[0].message.content
         : '';
@@ -247,21 +243,16 @@ async function callMistral(apiKey, model, content) {
     }
 
     if (mistralRes.status === 429) {
-      const retryAfter = Number(mistralRes.headers.get('retry-after')) || 0;
-      const elapsed = Date.now() - started;
-      const canRetry = attempt < MAX_RETRIES && elapsed < DEADLINE_MS;
-      if (!canRetry) {
-        throw {
-          status: 429,
-          message: 'A chave Mistral atingiu o limite de requisicoes por minuto (plano free ~1/min). Aguarde um momento e tente de novo. ' + responseError
-        };
-      }
-      if (retryAfter > 0 && retryAfter <= 30) await sleep(retryAfter * 1000);
+      if (attempt >= MAX_RETRIES) break;
       continue;
     }
 
-    throw { status: mistralRes.status, message: responseError };
+    const data = await mistralRes.json().catch(function() { return {}; });
+    throw { status: mistralRes.status, message: data.message || data.error || 'Erro na Mistral' };
   }
 
-  throw { status: 429, message: 'Limite de requisicoes da Mistral excedido. Tente novamente em instantes.' };
+  throw {
+    status: 429,
+    message: 'Limite de requisicoes da Mistral (plano free ~1/min) excedido. Tente novamente em 1-2 minutos.'
+  };
 }
